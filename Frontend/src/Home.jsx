@@ -6,6 +6,7 @@ import { BsFillCircleFill } from 'react-icons/bs';
 
 function Home() {
   const [todos, setToDos] = useState([]);
+  
 
   // Function to fetch tasks
   const fetchTodos = () => {
@@ -22,7 +23,8 @@ function Home() {
 
   return (
     <div className="bg-white h-5/6 rounded-md font-mono">
-      <h1 className="text-6xl text-center p-8z">ToDo List</h1>
+      
+      <h1 className="text-6xl text-center p-8">ToDo List</h1>
       <Create fetchTodos={fetchTodos} /> {/* Pass fetchTodos as prop */}
       {todos.length === 0 ? (
         <div >
