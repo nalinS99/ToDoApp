@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function Create({ fetchTodos }) {  
+function Create({ fetchTodos }) {
   const [task, setTask] = useState("");
 
   const handleAdd = () => {
@@ -14,26 +14,27 @@ function Create({ fetchTodos }) {
       .post("http://localhost:3001/add", { task: task })
       .then((result) => {
         console.log("Added task:", result);
-        setTask(""); 
+        setTask("");
         fetchTodos();
       })
       .catch((err) => console.log(err));
   };
 
   return (
-    <div className="flex items-center justify-center ">
-      <div>
+    <div className="flex items-center justify-center mb-6">
+      <div className="flex items-center">
         <input
           type="text"
           name="task"
           id="task"
           value={task}
           onChange={(e) => setTask(e.target.value)}
-          className="border border-black rounded-sm p-1 h-9 w-52 m-1"
+          className="border border-gray-300 rounded-md p-2 h-10 w-64 m-1 focus:outline-none focus:ring-2 focus:ring-gray-500 transition"
+          placeholder="Add a new task"
         />
         <button
           type="button"
-          className="bg-black text-white w-20 h-9 p-1 ml-1 "
+          className="bg-gray-800 text-white w-24 h-10 p-1 ml-1 rounded-md transition hover:bg-gray-700"
           onClick={handleAdd}
         >
           Add

@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import Create from "./Create";
 import axios from "axios";
-import { BsFillTrashFill } from 'react-icons/bs';
-import { BsFillCircleFill } from 'react-icons/bs';
+import {
+  BsFillTrashFill,
+  BsFillCheckCircleFill,
+  BsFillCircleFill,
+} from "react-icons/bs";
 
 function Home() {
   const [todos, setToDos] = useState([]);
-  
 
-  // Function to fetch tasks
   const fetchTodos = () => {
     axios
       .get("http://localhost:3001/get")
@@ -16,29 +17,70 @@ function Home() {
       .catch((err) => console.log(err));
   };
 
-  // Call fetchTodos on component mount
   useEffect(() => {
-    fetchTodos(); // Fetch tasks when component loads
+    fetchTodos();
   }, []);
 
+  const handleEdit = (id) => {
+    axios
+      .put(`http://localhost:3001/update/${id}`)
+      .then(() => {
+        setToDos((prevTodos) =>
+          prevTodos.map((todo) =>
+            todo._id === id ? { ...todo, done: !todo.done } : todo
+          )
+        );
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const deleted = (id) => {
+    axios
+      .delete(`http://localhost:3001/delete/${id}`)
+      .then(() => fetchTodos())
+      .catch((err) => console.log(err));
+  };
+
   return (
-    <div className="bg-white h-5/6 rounded-md font-mono">
-      
-      <h1 className="text-6xl text-center p-8">ToDo List</h1>
-      <Create fetchTodos={fetchTodos} /> {/* Pass fetchTodos as prop */}
+    <div className="bg-white h-5/6 rounded-lg shadow-lg p-6 overflow-y-auto">
+      <h1 className="text-5xl font-bold text-center mb-8 text-gray-800">
+        ToDo List
+      </h1>
+      <Create fetchTodos={fetchTodos} /> {}
       {todos.length === 0 ? (
-        <div >
-          <h2 className="text-2xl text-center p-2">No Record</h2>
+        <div>
+          <h2 className="text-xl text-center p-2 text-gray-500">No Record</h2>
         </div>
       ) : (
-        todos.map((todo, index) => <div key={index}className="flex justify-center" >
-          <div className="bg-black text-white w-72 m-1 p-2 flex items-center ">
-          <div className="flex-none"><BsFillCircleFill /></div>
-          <div className="grow h-10 flex items-center pl-3"><h2 >{todo.task}</h2></div>
-          <div className="flex-none"> <BsFillTrashFill /></div>
-          
+        todos.map((todo) => (
+          <div key={todo._id} className="flex justify-center mb-4">
+            <div className="bg-gray-800 text-white w-80 p-4 rounded-lg flex items-center shadow-md transition hover:shadow-lg">
+              <div
+                className="flex-none cursor-pointer"
+                onClick={() => handleEdit(todo._id)}
+              >
+                {todo.done ? (
+                  <BsFillCheckCircleFill className="text-green-500 text-2xl" />
+                ) : (
+                  <BsFillCircleFill className="text-gray-400 text-2xl" />
+                )}
+              </div>
+              <div
+                className={`grow h-10 flex items-center pl-3 ${
+                  todo.done ? "line-through text-gray-400" : "text-white"
+                }`}
+              >
+                <h2 className="text-lg">{todo.task}</h2>
+              </div>
+              <div
+                className="flex-none cursor-pointer"
+                onClick={() => deleted(todo._id)}
+              >
+                <BsFillTrashFill className="text-red-500 text-2xl hover:text-red-700 transition" />
+              </div>
+            </div>
           </div>
-        </div>)
+        ))
       )}
     </div>
   );
